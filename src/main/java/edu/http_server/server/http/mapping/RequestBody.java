@@ -8,9 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestMapping {
-    HttpMethod method();
-
-    String url();
+@Target(ElementType.PARAMETER)
+public @interface RequestBody {
 }

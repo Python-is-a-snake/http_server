@@ -6,11 +6,9 @@ import edu.http_server.server.http.RequestHandler;
 
 public class Application {
     public static void main(String[] args) {
-        // init components and dependencies
-//        ApplicationContext.init();
         // init mappings
         RequestHandler requestHandler = new RequestHandler();
-//        requestHandler.initMappings(ApplicationContext.getInstance());
+        requestHandler.initMappings(ApplicationContext.getInstance());// init components and dependencies
         // start server
         new HttpServer(requestHandler, 8080).start();
     }
