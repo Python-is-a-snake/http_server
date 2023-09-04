@@ -21,7 +21,7 @@ public class HttpRequestParser {
     @SneakyThrows
     public HttpRequest parseRequest(InputStream inputStream) {
         int bytes = inputStream.available();
-        int linesRead = 0; // counts amount of lines read
+        int linesRead = 0;
         String requestString = new String(inputStream.readNBytes(bytes));
         log.debug("Request str : {}", requestString);
 

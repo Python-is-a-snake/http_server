@@ -8,19 +8,22 @@ import java.util.stream.Collectors;
 
 @Data
 public class HttpResponse {
+    //version
     private HttpVersion httpVersion = HttpVersion.HTTP_1_1;
     private HttpStatus httpStatus;
 
+    //headers
     private Map<String, String> headers = new HashMap<>();
 
+    //body
     private String body;
 
     public String toResponseString() {
         return httpVersion.getValue() + " " + httpStatus.getFullStatus() + "\n" + getHeadersString() + "\n\n" + body;
     }
 
-    public void setBody(String string) {
-
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public void setStatusCode(int code) {

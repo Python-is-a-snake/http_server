@@ -53,7 +53,6 @@ public final class ApplicationContext {
             } else {
                 args[i] = registerBean(parameterType);
             }
-
         }
         Object bean = constructor.newInstance(args);
         context.put(beanClass, bean);

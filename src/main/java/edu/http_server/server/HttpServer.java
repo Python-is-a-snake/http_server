@@ -34,9 +34,6 @@ public class HttpServer {
 
                 Runnable runnable = () -> requestHandler.handleRequest(socket);
                 executorService.submit(runnable);
-
-//                Thread thread = new Thread(runnable, "Client " + socket.getPort());
-//                thread.start();
             }
         }
     }

@@ -1,6 +1,5 @@
 package edu.http_server.server.http.model;
 
-import edu.http_server.server.http.exception.BadRequestException;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +16,7 @@ public class HttpRequest {
 
     // headers
     private Map<String, String> headers = new HashMap<>();
+
     // body
     private String body;
 

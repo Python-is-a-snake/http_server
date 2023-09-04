@@ -17,10 +17,7 @@ import edu.http_server.server.http.model.HttpResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.Socket;
@@ -61,10 +58,6 @@ public class RequestHandler {
             writer.println(httpResponse.toResponseString());
             writer.flush();
 
-            for (int i = 0; i < 20; i++) {
-                log.debug("Thread counter: {}", i);
-                Thread.sleep(1000);
-            }
         }
     }
 
@@ -81,7 +74,7 @@ public class RequestHandler {
 
             Object returnObject = method.invoke(controller, args);
 
-            if(returnObject != null){
+            if (returnObject != null) {
                 String jsonObject = jsonMapper.writeValueAsString(returnObject);
                 log.debug("Response body : {}", jsonObject);
                 httpResponse.setBody(jsonObject);
@@ -96,7 +89,7 @@ public class RequestHandler {
     }
 
     //May be replaced with String
-    private Object[] getMethodArgs(Parameter[] parameters, RequestMapping mapping, HttpRequest httpRequest) throws BadRequestException{
+    private Object[] getMethodArgs(Parameter[] parameters, RequestMapping mapping, HttpRequest httpRequest) throws BadRequestException {
 
         //iterate threw params and check annotation
         Object args[] = new Object[parameters.length];
@@ -105,18 +98,15 @@ public class RequestHandler {
             Parameter parameter = parameters[i];
 
             if (parameter.isAnnotationPresent(PathVariable.class)) {
-                 
-                 args[i] = evaluatePathVariable(mapping, httpRequest, parameter);
-             }
+                args[i] = evaluatePathVariable(mapping, httpRequest, parameter);
+            }
 
             if (parameter.isAnnotationPresent(RequestBody.class)) {
-
                 args[i] = evaluateRequstBody(httpRequest, parameter);
             }
 
-            if(parameter.isAnnotationPresent(RequestParam.class)){
+            if (parameter.isAnnotationPresent(RequestParam.class)) {
                 args[i] = evaluateRequestParam(httpRequest, parameter);
-
             }
         }
 
@@ -149,10 +139,10 @@ public class RequestHandler {
         String body = httpRequest.getBody();
 
         try {
-            if(body.isEmpty()) throw new BadRequestException();
+            if (body.isEmpty()) throw new BadRequestException();
             return jsonMapper.readValue(body, parameter.getType());
 
-        }catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             throw new BadRequestException();
         }
     }
@@ -161,26 +151,21 @@ public class RequestHandler {
         RequestParam requestParamAnnotation = parameter.getAnnotation(RequestParam.class);
         String requestParamName = requestParamAnnotation.name();
         String paramValue = "";
-        if((paramValue = httpRequest.getParamValue(requestParamName)) != null){
+        if ((paramValue = httpRequest.getParamValue(requestParamName)) != null) {
             Class<?> parameterType = parameter.getType();
 
-            if(parameterType.equals(String.class)){
-                return  paramValue;
-            }
-            else if (parameterType.equals(Boolean.class)){
+            if (parameterType.equals(String.class)) {
+                return paramValue;
+            } else if (parameterType.equals(Boolean.class)) {
                 return Boolean.valueOf(paramValue);
-            }
-            else if (parameterType.equals(Double.class)) {
+            } else if (parameterType.equals(Double.class)) {
                 return Double.valueOf(paramValue);
-            }
-            else if (parameterType.equals(Integer.class)) {
+            } else if (parameterType.equals(Integer.class)) {
                 return Integer.valueOf(paramValue);
-            }
-            else if (parameterType.equals(Long.class)) {
+            } else if (parameterType.equals(Long.class)) {
                 return Long.valueOf(paramValue);
             }
-        }
-        else if(!requestParamAnnotation.required()) {
+        } else if (!requestParamAnnotation.required()) {
             return null;
         }
         throw new BadRequestException();
@@ -206,7 +191,7 @@ public class RequestHandler {
                 }
             }
 
-            if (key.method().equals(httpRequest.getMethod())) { //TODO see UserController TODO
+            if (key.method().equals(httpRequest.getMethod())) {
                 return key;
             }
         }

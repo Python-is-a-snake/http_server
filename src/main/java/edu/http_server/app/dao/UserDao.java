@@ -45,6 +45,21 @@ public class UserDao {
         return user;
     }
 
+    public Optional<User> findById(long id) {
+        try(Connection connection = dbManager.getConnection();
+        PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                User user = parseUser(resultSet);
+                return Optional.of(user);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
     public List<User> findAll() {
         ArrayList<User> users = new ArrayList<>();
 
@@ -62,22 +77,6 @@ public class UserDao {
         }
 
         return users;
-    }
-
-
-    public Optional<User> findById(long id) {
-        try(Connection connection = dbManager.getConnection();
-        PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
-            statement.setLong(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                User user = parseUser(resultSet);
-                return Optional.of(user);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return Optional.empty();
     }
 
     public User update(User user) {
